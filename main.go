@@ -55,6 +55,8 @@ func main() {
         filePaths, err := workspace.GetFilePathsFrom(cwd)
         database := lib.MakeDatabase(dbPath)
 
+            entries := [] lib.Entry{}
+
 
 
         if err != nil {
@@ -74,7 +76,13 @@ func main() {
             if err != nil {
                 log.Fatalln(err)
             }
+
+            entries = append(entries, lib.MakeEntry(path, blob.Oid))
         }
+
+        tree := lib.NewTree(entries)
+        database.Store(tree)
+
 
 
     } else if command == "test" {
