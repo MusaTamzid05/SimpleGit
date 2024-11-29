@@ -53,6 +53,10 @@ func main() {
         workspace := lib.MakeWorkspace()
         filePaths, err := workspace.GetFilePathsFrom(cwd)
 
+
+        dbPath := filepath.Join(gitPath, "objects")
+        database := lib.MakeDatabase(dbPath)
+
         if err != nil {
             log.Fatalln("Dir err ", err)
         }
@@ -64,9 +68,12 @@ func main() {
                 log.Fatalln(err)
 
             }
-
             blob := lib.NewBlob(content)
-            log.Println(blob.ToString())
+            err = database.Store(blob)
+
+            if err != nil {
+                log.Fatalln(err)
+            }
         }
 
 
@@ -75,24 +82,4 @@ func main() {
 
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
