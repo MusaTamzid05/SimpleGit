@@ -36,6 +36,12 @@ func main() {
 
         for _ , name := range folders {
             path := filepath.Join(gitPath, name)
+
+            if lib.Exists(path) {
+                log.Println("Skipping ", path)
+                continue
+            }
+
             err := os.Mkdir(path, 0755)
 
             if err != nil {
