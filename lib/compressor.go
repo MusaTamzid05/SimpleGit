@@ -3,6 +3,8 @@ package lib
 import (
     "bytes"
     "compress/zlib"
+    "os"
+    "io"
 
 )
 
@@ -33,8 +35,32 @@ func (c Compressor) Compress(content string) ([]byte, error) {
     return buffer.Bytes(), nil
 }
 
-func (c Compressor) Decompress(path string) string {
-    return ""
+func (c Compressor) Decompress(path string) (string, error){
+    file, err := os.Open(path)
+
+    if err != nil {
+        return "", err
+    }
+
+    defer file.Close()
+
+    reader, err := zlib.NewReader(file)
+
+    if err != nil {
+        return "", err
+    }
+
+    defer reader.Close()
+
+    decompressedData, err := io.ReadAll(reader)
+
+    if err != nil && err != io.EOF && err != io.ErrUnexpectedEOF {
+        return "", err
+
+    }
+
+
+    return string(decompressedData), err
 }
 
 func MakeCompressor() Compressor {

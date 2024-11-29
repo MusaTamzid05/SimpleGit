@@ -24,6 +24,7 @@ func main() {
 
 
     gitPath := filepath.Join(cwd, ".mit")
+    dbPath := filepath.Join(gitPath, "objects")
 
 
     if command == "init" {
@@ -52,10 +53,9 @@ func main() {
     } else if command == "commit" {
         workspace := lib.MakeWorkspace()
         filePaths, err := workspace.GetFilePathsFrom(cwd)
-
-
-        dbPath := filepath.Join(gitPath, "objects")
         database := lib.MakeDatabase(dbPath)
+
+
 
         if err != nil {
             log.Fatalln("Dir err ", err)
@@ -75,6 +75,38 @@ func main() {
                 log.Fatalln(err)
             }
         }
+
+
+    } else if command == "test" {
+        compressor := lib.MakeCompressor()
+
+        err := filepath.Walk(dbPath, func(path string, fileInfo os.FileInfo, err error) error {
+
+            if err != nil {
+                return err
+            }
+
+            if fileInfo.IsDir() {
+                return nil
+            }
+
+            content, err := compressor.Decompress(path)
+
+            if err != nil {
+                return err
+            }
+
+            log.Println(content)
+
+            return nil
+
+        })
+
+
+        if err != nil {
+            log.Fatalln(err)
+        }
+
 
 
     }
