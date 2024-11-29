@@ -97,6 +97,19 @@ func main() {
             log.Fatalln(err)
         }
 
+        headPath := filepath.Join(gitPath, "HEAD")
+
+        f, err := os.Create(headPath)
+
+        if err != nil {
+            log.Fatalln(err)
+        }
+
+        defer f.Close()
+
+        f.WriteString(commit.Oid)
+        log.Println("root-commit ", commit.Oid, " ", message)
+
 
 
     } else if command == "test" {
