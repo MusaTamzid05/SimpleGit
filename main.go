@@ -81,7 +81,21 @@ func main() {
         }
 
         tree := lib.NewTree(entries)
-        database.Store(tree)
+        err = database.Store(tree)
+
+        if err != nil {
+            log.Fatalln(err)
+        }
+
+        author := lib.NewAuthor("musa", "musa@email.com")
+        message := "initial commit"
+        commit := lib.NewCommit(tree.Oid, message, author)
+        err = database.Store(commit)
+
+
+        if err != nil {
+            log.Fatalln(err)
+        }
 
 
 
