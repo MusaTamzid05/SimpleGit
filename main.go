@@ -49,8 +49,42 @@ func main() {
             }
         }
 
+    } else if command == "commit" {
+        workspace := lib.MakeWorkspace(cwd)
+        filePaths, err := workspace.GetFilePaths()
+
+        if err != nil {
+            log.Fatalln(err)
+        }
+
+        for _, path := range filePaths {
+            log.Println(path)
+        }
+
+
     }
 
 
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
