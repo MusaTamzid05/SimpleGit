@@ -7,18 +7,21 @@ import (
 )
 
 type Workspace struct {
-    path string
     ignores []string
 
 }
 
-func (w Workspace) GetFilePaths() ([] string, error){
+func (w Workspace) GetFilePathsFrom(path string) ([] string, error){
     paths := []string{}
 
-    err := filepath.Walk(w.path, func(path string, fileInfo os.FileInfo, err error) error {
+    err := filepath.Walk(path, func(path string, fileInfo os.FileInfo, err error) error {
 
         if err != nil {
             return err
+        }
+
+        if fileInfo.IsDir() {
+            return nil
         }
 
         shouldIgnore := false
@@ -42,11 +45,21 @@ func (w Workspace) GetFilePaths() ([] string, error){
     return paths, err
 }
 
-func MakeWorkspace(path string) Workspace {
+func (w Workspace) ReadFile(path string) (string, error){
+    data, err := os.ReadFile(path)
+
+    if err != nil {
+        return "", err
+    }
+
+    return string(data), nil
+}
+
+func MakeWorkspace() Workspace {
     ignores := []string{
         ".git",
         ".mit",
     }
 
-    return Workspace{path: path, ignores: ignores}
+    return Workspace{ignores: ignores}
 }

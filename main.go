@@ -50,15 +50,23 @@ func main() {
         }
 
     } else if command == "commit" {
-        workspace := lib.MakeWorkspace(cwd)
-        filePaths, err := workspace.GetFilePaths()
+        workspace := lib.MakeWorkspace()
+        filePaths, err := workspace.GetFilePathsFrom(cwd)
 
         if err != nil {
-            log.Fatalln(err)
+            log.Fatalln("Dir err ", err)
         }
 
         for _, path := range filePaths {
-            log.Println(path)
+            content, err := workspace.ReadFile(path)
+
+            if err != nil {
+                log.Fatalln(err)
+
+            }
+
+            blob := lib.NewBlob(content)
+            log.Println(blob.ToString())
         }
 
 
