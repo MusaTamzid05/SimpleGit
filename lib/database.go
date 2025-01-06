@@ -7,6 +7,7 @@ import (
     "path/filepath"
     "math/rand/v2"
     "os"
+    "log"
 )
 
 type Database struct {
@@ -43,6 +44,13 @@ func (d Database) WriteContent(oid, content string) error {
         os.Mkdir(dirPath, 0755)
     }
 
+    objectPath := filepath.Join(dirPath, path2)
+
+    if Exists(objectPath) {
+        log.Println(objectPath, " already exists")
+        return nil
+    }
+
     compressor := MakeCompressor()
     compressedData, err := compressor.Compress(content)
 
@@ -68,7 +76,6 @@ func (d Database) WriteContent(oid, content string) error {
     }
 
     
-    objectPath := filepath.Join(dirPath, path2)
     err = os.Rename(tempPath, objectPath) 
 
     if err != nil  {

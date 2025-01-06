@@ -114,7 +114,7 @@ func main() {
         output := ""
 
         if parent == "" {
-            output += "root-commit"
+            output += "root-commit "
         } 
 
             output += fmt.Sprintf("%s %s", commit.Oid, message)
