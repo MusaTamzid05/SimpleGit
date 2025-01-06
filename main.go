@@ -51,6 +51,20 @@ func main() {
         }
 
     } else if command == "commit" {
+
+        if len(args) != 3 {
+            log.Println("Usage: mit commit -m 'test'")
+            return
+        }
+
+        if args[1] != "-m" {
+            log.Println("Usage: mit commit -m 'test'")
+            return
+        }
+
+        message := args[2]
+
+
         workspace := lib.MakeWorkspace()
         filePaths, err := workspace.GetFilePathsFrom(cwd)
         database := lib.MakeDatabase(dbPath)
@@ -88,7 +102,6 @@ func main() {
         }
 
         author := lib.NewAuthor("musa", "musa@email.com")
-        message := "initial commit"
         commit := lib.NewCommit(tree.Oid, message, author)
         err = database.Store(commit)
 

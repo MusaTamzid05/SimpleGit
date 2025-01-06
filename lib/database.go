@@ -27,7 +27,6 @@ func (d Database) Store(object Object) error {
     hash.Write([]byte(content))
     hashValue := hash.Sum(nil)
     oid := hex.EncodeToString(hashValue)
-    fmt.Println(oid, " => ", str[:10])
     object.SetOid(oid)
 
 
