@@ -1,6 +1,7 @@
 package lib
 
 type Commit struct {
+    parent string
     Oid string
     treeOid string
     author *Author
@@ -16,6 +17,11 @@ func (c Commit) Type() string {
 func (c Commit) ToString() string {
     lines := ""
     lines += "tree " + c.treeOid + "\n"
+
+    if c.parent != "" {
+        lines += "parent " + c.parent + "\n"
+    }
+
     lines += "author " + c.author.ToSring() +  "\n"
     lines += "commiter " + c.author.ToSring() +  "\n"
     lines += "\n"
@@ -30,6 +36,6 @@ func (c *Commit) SetOid(oid string) {
 
 
 
-func NewCommit(treeOid, message string, author *Author) *Commit {
-    return &Commit{treeOid: treeOid, author: author, Message: message}
+func NewCommit(parent, treeOid, message string, author *Author) *Commit {
+    return &Commit{parent: parent, treeOid: treeOid, author: author, Message: message}
 }

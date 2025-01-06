@@ -5,6 +5,7 @@ import (
     "path/filepath"
     "log"
     "simple_git_clone_recording/lib"
+    "fmt"
 )
 
 func main() {
@@ -101,27 +102,24 @@ func main() {
             log.Fatalln(err)
         }
 
+        refs := lib.MakeRefs(gitPath)
+        parent := refs.ReadHead()
+
+
         author := lib.NewAuthor("musa", "musa@email.com")
-        commit := lib.NewCommit(tree.Oid, message, author)
+        commit := lib.NewCommit(parent, tree.Oid, message, author)
         err = database.Store(commit)
+        refs.UpdateHead(commit.Oid)
 
+        output := ""
 
-        if err != nil {
-            log.Fatalln(err)
-        }
+        if parent == "" {
+            output += "root-commit"
+        } 
 
-        headPath := filepath.Join(gitPath, "HEAD")
+            output += fmt.Sprintf("%s %s", commit.Oid, message)
 
-        f, err := os.Create(headPath)
-
-        if err != nil {
-            log.Fatalln(err)
-        }
-
-        defer f.Close()
-
-        f.WriteString(commit.Oid)
-        log.Println("root-commit ", commit.Oid, " ", message)
+        log.Println(output)
 
 
 
