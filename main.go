@@ -69,8 +69,7 @@ func main() {
         workspace := lib.MakeWorkspace()
         filePaths, err := workspace.GetFilePathsFrom(cwd)
         database := lib.MakeDatabase(dbPath)
-
-            entries := [] lib.Entry{}
+        entries := [] lib.Entry{}
 
 
 
@@ -79,6 +78,7 @@ func main() {
         }
 
         for _, path := range filePaths {
+
             content, err := workspace.ReadFile(path)
 
             if err != nil {
@@ -86,17 +86,18 @@ func main() {
 
             }
             blob := lib.NewBlob(content)
-            err = database.Store(blob)
+            //err = database.Store(blob)
 
             if err != nil {
                 log.Fatalln(err)
             }
 
-            entries = append(entries, lib.MakeEntry(path, blob.Oid))
+            entries = append(entries, lib.MakeEntry(path, blob))
         }
 
         tree := lib.NewTree(entries)
-        err = database.Store(tree)
+        //err = database.Store(tree)
+        err = tree.Traverse(database)
 
         if err != nil {
             log.Fatalln(err)
@@ -126,11 +127,30 @@ func main() {
     } else if command == "test" {
         workspace := lib.MakeWorkspace()
         paths, _:= workspace.GetFilePathsFrom(cwd)
+        entries := [] lib.Entry{}
+        database := lib.MakeDatabase(dbPath)
 
         for _, path := range paths {
-            fmt.Println(path)
+            content, err := workspace.ReadFile(path)
+
+            if err != nil {
+                log.Fatalln(err)
+
+            }
+            blob := lib.NewBlob(content)
+            //err = database.Store(blob)
+
+            if err != nil {
+                log.Fatalln(err)
+            }
+            entries = append(entries, lib.MakeEntry(path, blob))
 
         }
+
+        tree := lib.NewTree(entries)
+        //err = database.Store(tree)
+        err = tree.Traverse(database)
+
     }
 
 
