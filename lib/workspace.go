@@ -14,7 +14,7 @@ type Workspace struct {
 func (w Workspace) GetFilePathsFrom(path string) ([] string, error){
     paths := []string{}
 
-    err := filepath.Walk(path, func(path string, fileInfo os.FileInfo, err error) error {
+    err := filepath.Walk(path, func(currentPath string, fileInfo os.FileInfo, err error) error {
 
         if err != nil {
             return err
@@ -27,7 +27,7 @@ func (w Workspace) GetFilePathsFrom(path string) ([] string, error){
         shouldIgnore := false
 
         for _, ignore := range w.ignores {
-            if strings.Contains(path, ignore) {
+            if strings.Contains(currentPath, ignore) {
                 shouldIgnore = true
                 break
             }
@@ -37,8 +37,8 @@ func (w Workspace) GetFilePathsFrom(path string) ([] string, error){
             return nil
         }
 
-
-        paths = append(paths, path)
+        // remove extra string so that path is relative to this dir only
+        paths = append(paths, currentPath[len(path) + 1 : len(currentPath)] )
         return nil
     })
 

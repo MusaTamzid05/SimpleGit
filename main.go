@@ -124,37 +124,13 @@ func main() {
 
 
     } else if command == "test" {
-        compressor := lib.MakeCompressor()
+        workspace := lib.MakeWorkspace()
+        paths, _:= workspace.GetFilePathsFrom(cwd)
 
-        err := filepath.Walk(dbPath, func(path string, fileInfo os.FileInfo, err error) error {
+        for _, path := range paths {
+            fmt.Println(path)
 
-            if err != nil {
-                return err
-            }
-
-            if fileInfo.IsDir() {
-                return nil
-            }
-
-            content, err := compressor.Decompress(path)
-
-            if err != nil {
-                return err
-            }
-
-            log.Println(content)
-
-            return nil
-
-        })
-
-
-        if err != nil {
-            log.Fatalln(err)
         }
-
-
-
     }
 
 
