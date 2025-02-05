@@ -16,12 +16,10 @@ type Tree struct {
 }
 
 func (t Tree) ToString() string {
-    // @TODO Update this with Nodes
-    MODE := "100644"
     var buffer bytes.Buffer
 
     for _, entry := range t.Entries {
-        formattedEntry := fmt.Sprintf("%s %s", MODE, entry.Name)
+        formattedEntry := fmt.Sprintf("%s %s", entry.Mode(), entry.Name)
         buffer.WriteString(formattedEntry + "\x00")
 
         oidBytes, err := hex.DecodeString(entry.Oid)

@@ -91,8 +91,16 @@ func main() {
             if err != nil {
                 log.Fatalln(err)
             }
+            
 
-            entries = append(entries, lib.MakeEntry(path, blob))
+            entry, err := lib.MakeEntry(path, blob)
+
+            if err != nil {
+                log.Println("Error adding entry ", err)
+                continue
+            }
+
+            entries = append(entries, entry)
         }
 
         tree := lib.NewTree(entries)
@@ -143,7 +151,14 @@ func main() {
             if err != nil {
                 log.Fatalln(err)
             }
-            entries = append(entries, lib.MakeEntry(path, blob))
+
+            entry, err := lib.MakeEntry(path, blob)
+
+            if err != nil {
+                log.Println("Error adding entry ", err)
+                continue
+            }
+            entries = append(entries, entry)
 
         }
 
