@@ -2,6 +2,9 @@ package lib
 
 import (
     "os"
+    "fmt"
+    "bytes"
+    "encoding/binary"
 )
 
 const (
@@ -53,6 +56,75 @@ type IndexEntry struct {
     Oid string
     Flags int
     Path string
+
+}
+
+func (i IndexEntry) ToString() (string, error) {
+    // object id must be 40 bits long
+    // write all the stuct data as BigEndian in buffer
+    // return the buffer
+
+    if len(i.Oid) != 40 {
+        return "", fmt.Errorf("IndexEntry OID must 40 bits")
+    }
+
+    buffer := new(bytes.Buffer)
+
+    if err := binary.Write(buffer, binary.BigEndian, i.CTime); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+
+    if err := binary.Write(buffer, binary.BigEndian, i.CTimeNSec); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+
+    if err := binary.Write(buffer, binary.BigEndian, i.MTime); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+
+    if err := binary.Write(buffer, binary.BigEndian, i.MTimeNSec); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+    if err := binary.Write(buffer, binary.BigEndian, int32(i.Mode)); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+    if err := binary.Write(buffer, binary.BigEndian, i.Size); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+    oidBytes, err := decodeHex(i.Oid)
+
+    if err != nil {
+        return "", fmt.Errorf("Error decoding hex for oid ", err)
+    }
+
+    if err := binary.Write(buffer, binary.BigEndian, oidBytes); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+
+    if err := binary.Write(buffer, binary.BigEndian, int32(i.Flags)); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+    pathBytes := []byte(i.Path)
+
+    if err := binary.Write(buffer, binary.BigEndian, pathBytes); err != nil {
+        return "", fmt.Errorf("Error converting IndexEntry variable ", err)
+    }
+
+    err = buffer.WriteByte(0)
+
+    if err != nil {
+        return "", fmt.Errorf("Error creating buffer to IndexEntry string ", err)
+    }
+
+    return buffer.String(), nil
 
 }
 

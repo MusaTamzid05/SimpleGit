@@ -5,6 +5,7 @@ import (
     "bytes"
     "encoding/binary"
     "fmt"
+    "log"
 )
 
 func Exists(path string) bool {
@@ -49,4 +50,45 @@ func pack(magicStr string, number uint16, entries uint32) (string, error){
 
     return string(bytesData), nil
 
+}
+
+func decodeHex(hexString string)([]byte, error) {
+    // hex string must be of even length
+    // create a slice of bytes where
+    // every two hex will be converted
+    // to bytes and saved in a slice (LOL)
+
+
+    if len(hexString) % 2 != 0 {
+        return nil, fmt.Errorf("HexString must be of even length")
+    }
+
+    byteSlices := make([]byte, len(hexString) / 2)
+
+
+    for i := 0; i < len(hexString); i += 2 {
+        byteValue, err := hexToByte(hexString[i : i + 2])
+
+        if err != nil {
+            log.Fatalln("Error converting hex to byte ", err)
+        }
+
+        byteSlices[i / 2] = byteValue
+
+    }
+
+    return byteSlices, nil
+
+
+}
+
+func hexToByte(hexString string)(byte, error) {
+    var result byte
+    _, err := fmt.Sscanf(hexString, "%2x", &result)
+
+    if err != nil {
+        return 0, err
+    }
+
+    return result, nil
 }

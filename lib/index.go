@@ -1,5 +1,6 @@
 package lib
 
+
 type Index struct {
     entries map[string]IndexEntry
 
