@@ -4,8 +4,10 @@ import (
     "os"
     "bytes"
     "encoding/binary"
+    "encoding/hex"
     "fmt"
     "log"
+    "crypto/sha1"
 )
 
 func Exists(path string) bool {
@@ -91,4 +93,15 @@ func hexToByte(hexString string)(byte, error) {
     }
 
     return result, nil
+}
+
+func Sha1Hasher(input string) string {
+    algo := sha1.New()
+    algo.Write([]byte(input))
+    byteSlice := algo.Sum(nil)
+
+    return hex.EncodeToString(byteSlice)
+
+
+
 }

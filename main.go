@@ -63,7 +63,7 @@ func main() {
         filePath := args[1]
         workspace := lib.MakeWorkspace()
         database := lib.MakeDatabase(dbPath)
-        index := lib.MakeIndex()
+        index := lib.MakeIndex(filepath.Join(gitPath, "index"))
         data, err := workspace.ReadFile(filePath)
 
         if err != nil {
