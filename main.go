@@ -51,6 +51,48 @@ func main() {
             }
         }
 
+    } else if command == "add" {
+
+
+
+        if len(args) != 2 {
+            log.Println("Usage: mit add 'file_path'")
+            return
+        }
+
+        filePath := args[1]
+        workspace := lib.MakeWorkspace()
+        database := lib.MakeDatabase(dbPath)
+        index := lib.MakeIndex()
+        data, err := workspace.ReadFile(filePath)
+
+        if err != nil {
+            log.Fatalln("Cannot read file for adding ", err)
+        }
+
+        blob := lib.NewBlob(data)
+        err = database.Store(blob)
+
+        if err != nil {
+            log.Fatalln("Cannot blob file for adding ", err)
+        }
+
+        err = index.Add(filePath, blob)
+
+
+        if err != nil {
+            log.Fatalln("Cannot add blob file to index ", err)
+        }
+
+        err = index.WriteUpdate()
+
+
+        if err != nil {
+            log.Fatalln("Cannot write update with index add", err)
+        }
+
+
+
     } else if command == "commit" {
 
         if len(args) != 3 {

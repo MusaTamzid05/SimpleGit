@@ -25,7 +25,6 @@ func (e Entry) Mode() string {
     }
 
     return REGULAR_MODE
-
 }
 
 func MakeEntry(name string, blob *Blob) (Entry, error){
